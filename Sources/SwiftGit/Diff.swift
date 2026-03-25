@@ -229,10 +229,7 @@ public struct DiffPatch: Hashable, Sendable {
     public let contextLineCount: Int
     public let addedLineCount: Int
     public let removedLineCount: Int
-
-    public var isBinary: Bool {
-        text.contains("Binary files ") || text.contains("GIT binary patch")
-    }
+    public let isBinary: Bool
 }
 
 public struct DiffPatchMetadata: Hashable, Sendable {
@@ -493,9 +490,28 @@ public final class Diff {
                 hunks: hunks,
                 contextLineCount: metadata.contextLineCount,
                 addedLineCount: metadata.addedLineCount,
-                removedLineCount: metadata.removedLineCount
+                removedLineCount: metadata.removedLineCount,
+                isBinary: isBinary(delta: delta, renderedPatchText: includeText ? text : nil)
             )
         }
+    }
+
+    private func isBinary(
+        delta: DiffDelta,
+        renderedPatchText: String?
+    ) -> Bool {
+        let binaryFlag = rawUInt32(of: GIT_DIFF_FLAG_BINARY)
+        if (delta.oldFile.flags | delta.newFile.flags) & binaryFlag != 0 {
+            return true
+        }
+
+        guard let renderedPatchText else {
+            return false
+        }
+
+        return
+            renderedPatchText.contains("Binary files ") ||
+            renderedPatchText.contains("GIT binary patch")
     }
 
     private func streamedPatchText(

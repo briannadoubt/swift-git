@@ -87,8 +87,12 @@ extension Repository {
 
     public func checkout(branch named: String, strategy: CheckoutStrategy = .safe) throws {
         let referenceName = named.hasPrefix("refs/") ? named : "refs/heads/\(named)"
+        let object = try objectPointer(for: referenceName)
+        defer { git_object_free(object) }
+
+        var options = try checkoutOptions(strategy: strategy)
+        try check(git_checkout_tree(pointer, object, &options), context: "git_checkout_tree")
         try setHEAD(to: referenceName)
-        try checkoutHEAD(strategy: strategy)
     }
 
     private func checkoutOptions(strategy: CheckoutStrategy) throws -> git_checkout_options {

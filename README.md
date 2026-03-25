@@ -22,7 +22,7 @@ On iOS and visionOS, the package ships a bundled binary dependency.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/briannadoubt/swift-git.git", branch: "main")
+    .package(url: "https://github.com/briannadoubt/swift-git.git", from: "0.1.0")
 ]
 ```
 

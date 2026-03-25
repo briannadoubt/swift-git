@@ -324,6 +324,33 @@ struct RepositoryTests {
     }
 
     @Test
+    func structuredPatchesRetainBinaryClassificationWithoutRenderedText() throws {
+        let root = try makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let repositoryURL = root.appendingPathComponent("repo", isDirectory: true)
+        let repository = try Repository.create(at: repositoryURL, initialBranch: "main")
+        let author = Signature(name: "Bri", email: "bri@example.com")
+
+        let binaryURL = repositoryURL.appendingPathComponent("Asset.bin")
+        try Data([0x00, 0x01, 0x02, 0x03]).write(to: binaryURL)
+
+        let index = try repository.index()
+        try index.add(path: "Asset.bin")
+        _ = try repository.commit(message: "Add binary asset", author: author)
+
+        try Data([0x00, 0x01, 0x04, 0x05]).write(to: binaryURL)
+
+        let diff = try repository.diffIndexToWorkingDirectory()
+        let patch = try diff.patch(at: 0)
+        let structuredPatch = try diff.structuredPatch(at: 0)
+
+        #expect(patch.isBinary == true)
+        #expect(structuredPatch.text.isEmpty == true)
+        #expect(structuredPatch.isBinary == true)
+    }
+
+    @Test
     func mergeBaseAndTreeToIndexDiffsSupportBranchAndRenameWorkflows() throws {
         let root = try makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
