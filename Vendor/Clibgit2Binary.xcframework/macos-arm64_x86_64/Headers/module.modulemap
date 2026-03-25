@@ -1,0 +1,4 @@
+module Clibgit2Binary [system] {
+    header "libgit2_shim.h"
+    export *
+}

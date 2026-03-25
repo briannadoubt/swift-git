@@ -20,24 +20,15 @@ let package = Package(
             name: "Clibgit2Binary",
             path: "Vendor/Clibgit2Binary.xcframework"
         ),
-        .systemLibrary(
-            name: "Clibgit2System",
-            pkgConfig: "libgit2",
-            providers: [
-                .brew(["libgit2", "pkgconf"]),
-                .apt(["libgit2-dev", "pkg-config"])
-            ]
-        ),
         .target(
             name: "Libgit2Bindings",
             dependencies: [
-                .target(name: "Clibgit2System", condition: .when(platforms: [.macOS])),
-                .target(name: "Clibgit2Binary", condition: .when(platforms: [.iOS, .visionOS]))
+                .target(name: "Clibgit2Binary", condition: .when(platforms: [.macOS, .iOS, .visionOS]))
             ],
             linkerSettings: [
-                .linkedFramework("CoreFoundation", .when(platforms: [.iOS, .visionOS])),
-                .linkedFramework("Security", .when(platforms: [.iOS, .visionOS])),
-                .linkedLibrary("iconv", .when(platforms: [.iOS, .visionOS]))
+                .linkedFramework("CoreFoundation", .when(platforms: [.macOS, .iOS, .visionOS])),
+                .linkedFramework("Security", .when(platforms: [.macOS, .iOS, .visionOS])),
+                .linkedLibrary("iconv", .when(platforms: [.macOS, .iOS, .visionOS]))
             ]
         ),
         .target(

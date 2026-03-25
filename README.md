@@ -10,19 +10,13 @@
 - macOS 15+, iOS 18+, visionOS 2+
 - Xcode 16.3+ / Swift 6.2+
 
-On macOS, `SwiftGit` links against a system `libgit2`:
-
-```bash
-brew install libgit2 pkgconf
-```
-
-On iOS and visionOS, the package ships a bundled binary dependency.
+`SwiftGit` ships a bundled `libgit2` binary dependency on Apple platforms.
 
 ## Installation
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/briannadoubt/swift-git.git", from: "0.1.0")
+    .package(url: "https://github.com/briannadoubt/swift-git.git", from: "0.1.1")
 ]
 ```
 

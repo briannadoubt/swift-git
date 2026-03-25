@@ -12,10 +12,6 @@ jobs:
       - uses: actions/checkout@v6
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app
-      - name: Install libgit2
-        run: brew install libgit2 pkgconf
-      - name: Configure pkg-config
-        run: echo "PKG_CONFIG_PATH=$(brew --prefix libgit2)/lib/pkgconfig" >> "$GITHUB_ENV"
       - name: Swift Version
         run: swift --version
       - name: Build
